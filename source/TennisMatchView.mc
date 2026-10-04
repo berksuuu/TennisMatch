@@ -51,7 +51,15 @@ class TennisMatchView extends WatchUi.View {
         var setsText = "Sätze " + match.sets[ME].toString() + " - " + match.sets[OPPONENT].toString();   // wie gamesText, nur mit sets
         dc.drawText(midX, midY + 90, Graphics.FONT_SMALL, setsText, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
 
-
+        // Aufschlag-Punkt (zuletzt, damit die gelbe Farbe nichts anderes einfärbt)
+        if(!match.finished) {
+            var dotX = midX - 130;
+            if (match.currentServer() == OPPONENT) {
+                dotX = midX + 130;
+            }
+            dc.setColor(Graphics.COLOR_YELLOW, Graphics.COLOR_TRANSPARENT);
+            dc.fillCircle(dotX, midY, 8);
+        }
     }
 
     private function pointsText() as String {

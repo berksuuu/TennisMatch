@@ -11,6 +11,7 @@ class MatchState {
     var sets as Array<Number>; 
     var finished as Boolean;  
     var tiebreak as Boolean; 
+    var server as Number; 
 
     function initialize() {
         points = [0, 0];
@@ -18,6 +19,7 @@ class MatchState {
         sets = [0, 0]; 
         finished = false; 
         tiebreak = false; 
+        server = ME; 
     }
 
     function pointWon(player as Number) as Void {
@@ -38,7 +40,24 @@ class MatchState {
         }
     }
 
+    function currentServer() as Number {
+        if(!tiebreak) {
+            return server; 
+        }
+
+        var played = points[ME] + points[OPPONENT]; 
+        var pos = played % 4; 
+
+        if (pos == 1 || pos == 2) {
+            var otherServer = 1 - server; 
+            return otherServer; 
+        }
+
+        return server; 
+    }
+
    private function gameWon(player as Number) as Void {
+        server = 1 - server; 
         games[player] += 1; 
         points = [0, 0]; 
         var other = 1 - player; 
