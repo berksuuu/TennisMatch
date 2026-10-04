@@ -1,5 +1,6 @@
 {
     "monkeyC.testDevices": [
         "fr170m"
-    ]
+    ],
+    "prettierMonkeyC.disableJungleFixes": true
 }

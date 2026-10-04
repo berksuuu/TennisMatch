@@ -65,7 +65,6 @@ function testTiebreakStartsAtSixSix(logger as Logger) as Boolean {
     return true; 
 }
 
-// Hilfsfunktion: spielt den ersten Satz bis 6:6, danach läuft der Tie-Break
 function playToTiebreak(m as MatchState) as Void {
     winPoints(m, ME, 4*5);
     winPoints(m, OPPONENT, 4*5);
@@ -73,7 +72,6 @@ function playToTiebreak(m as MatchState) as Void {
     winPoints(m, OPPONENT, 4*1);
 }
 
-// Tie-Break 7:6 → noch nicht vorbei, weil nur 1 Punkt Vorsprung
 (:test)
 function testTiebreakNeedsTwo(logger as Logger) as Boolean {
     var m = new MatchState();
@@ -119,4 +117,87 @@ function testServerAlternates(logger as Logger) as Boolean {
     winPoints(m, ME, 4*1); 
     Test.assertEqualMessage(m.currentServer(), OPPONENT, "Spieler 2 schlägt auf"); 
     return true; 
+}
+
+// ---------- Undo ----------
+
+// Undo nimmt genau einen Punkt zurück
+(:test)
+function testUndoPoint(logger as Logger) as Boolean {
+    var m = new MatchState();
+    winPoints(m, ME, 2);
+    m.undo();
+    Test.assertEqualMessage(m.points[ME], 1, "Punkte ich nach Undo");
+    return true;
+}
+
+// Undo nach einem Game holt 40:0, das Game und den Aufschlag zurück
+(:test)
+function testUndoGame(logger as Logger) as Boolean {
+    var m = new MatchState();
+    winPoints(m, ME, 4);
+    m.undo();
+    Test.assertEqualMessage(m.games[ME], 0, "Game zurückgenommen");
+    Test.assertEqualMessage(m.points[ME], 3, "wieder 40:0");
+    Test.assertEqualMessage(m.currentServer(), ME, "Aufschlag wieder bei mir");
+    return true;
+}
+
+// Undo nach einem Tie-Break-Gewinn holt den Tie-Break zurück
+(:test)
+function testUndoTiebreakWin(logger as Logger) as Boolean {
+    var m = new MatchState();
+    playToTiebreak(m);
+    winPoints(m, ME, 7);
+    Test.assertEqualMessage(m.sets[ME], 1, "Satz gewonnen");
+    m.undo();
+    Test.assertEqualMessage(m.sets[ME], 0, "Satz zurückgenommen");
+    Test.assertEqualMessage(m.tiebreak, true, "wieder im Tie-Break");
+    Test.assertEqualMessage(m.points[ME], 6, "wieder 6 Tie-Break-Punkte");
+    return true;
+}
+
+// Undo im Tie-Break darf die Aufschlag-Reihenfolge nicht verdrehen
+(:test)
+function testUndoInTiebreakKeepsServer(logger as Logger) as Boolean {
+    var m = new MatchState();
+    playToTiebreak(m);                  // bei 6:6 schlage ich den ersten Tie-Break-Punkt auf
+    winPoints(m, ME, 2);
+    m.undo();                           // Stand 1:0 im Tie-Break
+    Test.assertEqualMessage(m.currentServer(), OPPONENT, "bei 1:0 schlägt der Gegner auf");
+    return true;
+}
+
+// Undo nach Matchende macht das Match wieder spielbar
+(:test)
+function testUndoAfterMatchEnd(logger as Logger) as Boolean {
+    var m = new MatchState();
+    winPoints(m, ME, 4*6*2);
+    Test.assertEqualMessage(m.finished, true, "Match vorbei");
+    m.undo();
+    Test.assertEqualMessage(m.finished, false, "Match läuft wieder");
+    Test.assertEqualMessage(m.sets[ME], 1, "nur noch 1 Satz");
+    return true;
+}
+
+// Undo ohne gespielte Punkte: nichts passiert, kein Absturz
+(:test)
+function testUndoEmpty(logger as Logger) as Boolean {
+    var m = new MatchState();
+    Test.assertEqualMessage(m.canUndo(), false, "nichts zum Rückgängigmachen");
+    m.undo();
+    Test.assertEqualMessage(m.points[ME], 0, "Punkte unverändert");
+    return true;
+}
+
+// Schnappschüsse sind echte Kopien (Falle: Arrays sind nur Verweise)
+(:test)
+function testSnapshotIsIndependent(logger as Logger) as Boolean {
+    var m = new MatchState();
+    winPoints(m, ME, 2);
+    m.undo();
+    m.undo();
+    Test.assertEqualMessage(m.points[ME], 0, "zurück auf 0:0");
+    Test.assertEqualMessage(m.canUndo(), false, "Stapel leer");
+    return true;
 }

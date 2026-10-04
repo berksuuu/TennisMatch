@@ -12,6 +12,7 @@ class MatchState {
     var finished as Boolean;  
     var tiebreak as Boolean; 
     var server as Number; 
+    var history as Array<MatchState>; 
 
     function initialize() {
         points = [0, 0];
@@ -20,6 +21,7 @@ class MatchState {
         finished = false; 
         tiebreak = false; 
         server = ME; 
+        history = []; 
     }
 
     function pointWon(player as Number) as Void {
@@ -27,6 +29,7 @@ class MatchState {
             return;
         }
 
+        history.add(copy()); 
         var other = 1 - player; 
         points[player] += 1; 
 
@@ -83,5 +86,37 @@ class MatchState {
         }
     }
     
+    private function copy() as MatchState {
+        var c = new MatchState(); 
+        c.points = [points[ME], points[OPPONENT]]; 
+        c.games = [games[ME], games[OPPONENT]]; 
+        c.sets = [sets[ME], sets[OPPONENT]]; 
+        c.finished = finished; 
+        c.tiebreak = tiebreak; 
+        c.server = server; 
+        return c; 
+    }
+
+   function canUndo() as Boolean {
+    return history.size() > 0; 
+   }
+
+   function undo() as Void {
+    if (!canUndo()) {
+        return; 
+    }
+
+    var last = history[history.size() - 1]; 
+    history = history.slice(0, history.size() - 1); 
+
+    points = last.points; 
+    games = last.games; 
+    sets = last.sets; 
+    finished = last.finished; 
+    tiebreak = last.tiebreak; 
+    server = last.server; 
+
+   }
+
 
 }
