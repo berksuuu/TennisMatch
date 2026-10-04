@@ -58,6 +58,10 @@ class TennisMatchView extends WatchUi.View {
         var myself = match.points[ME]; 
         var opp = match.points[OPPONENT]; 
 
+        if(match.tiebreak == true){
+            return myself.toString() + " - " + opp.toString(); 
+        }
+
         if (myself >= 3 && opp >= 3){
             if(myself == opp){
                 return "40 - 40"; 
