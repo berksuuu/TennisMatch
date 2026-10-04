@@ -18,10 +18,13 @@ class TennisMatchApp extends Application.AppBase {
 
     // Return the initial view of your application here
     function getInitialView() as [Views] or [Views, InputDelegates] {
-        return [ new TennisMatchView(), new TennisMatchDelegate() ];
+        var view = new TennisMatchView(); 
+        return [view, new TennisMatchDelegate(view)]; 
     }
 
 }
+
+
 
 function getApp() as TennisMatchApp {
     return Application.getApp() as TennisMatchApp;
