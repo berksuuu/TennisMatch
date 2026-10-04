@@ -35,8 +35,22 @@ class TennisMatchView extends WatchUi.View {
         dc.drawText(midX, midY - 90, Graphics.FONT_SMALL, gamesText, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
 
         // Punkte groß in der Mitte
-        var scoreText = pointsText();   
+        var scoreText; 
+        if(match.finished) {
+            if(match.sets[ME] > match.sets[OPPONENT]){
+                scoreText = "Sieg!"; 
+            } else {
+                scoreText = "Niederlage!";
+            }
+
+        } else {
+            scoreText = pointsText(); 
+        }
         dc.drawText(midX, midY, Graphics.FONT_LARGE, scoreText, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+
+        var setsText = "Sätze " + match.sets[ME].toString() + " - " + match.sets[OPPONENT].toString();   // wie gamesText, nur mit sets
+        dc.drawText(midX, midY + 90, Graphics.FONT_SMALL, setsText, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+
 
     }
 
