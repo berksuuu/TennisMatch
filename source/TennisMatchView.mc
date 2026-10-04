@@ -35,12 +35,33 @@ class TennisMatchView extends WatchUi.View {
         dc.drawText(midX, midY - 90, Graphics.FONT_SMALL, gamesText, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
 
         // Punkte groß in der Mitte
-        var pointsText = match.points[ME].toString() + " - " + match.points[OPPONENT].toString();   
-        dc.drawText(midX, midY, Graphics.FONT_LARGE, pointsText, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
-
-
+        var scoreText = pointsText();   
+        dc.drawText(midX, midY, Graphics.FONT_LARGE, scoreText, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
 
     }
+
+    private function pointsText() as String {
+        var myself = match.points[ME]; 
+        var opp = match.points[OPPONENT]; 
+
+        if (myself >= 3 && opp >= 3){
+            if(myself == opp){
+                return "40 - 40"; 
+            } else if (myself > opp) {
+                return "AD - 40"; 
+            } else {
+                return "40 - AD"; 
+            }
+        }
+
+        var labels = ["0", "15", "30", "40"]; 
+
+        return labels[myself] + " - " + labels[opp]; 
+
+    }
+
+
+
 
     // Called when this View is removed from the screen. Save the
     // state of this View here. This includes freeing resources from
