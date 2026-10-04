@@ -4,6 +4,7 @@ import Toybox.WatchUi;
 
 class TennisMatchApp extends Application.AppBase {
 
+
     function initialize() {
         AppBase.initialize();
     }
@@ -18,8 +19,9 @@ class TennisMatchApp extends Application.AppBase {
 
     // Return the initial view of your application here
     function getInitialView() as [Views] or [Views, InputDelegates] {
-        var view = new TennisMatchView(); 
-        return [view, new TennisMatchDelegate(view)]; 
+        var match = new MatchState();  
+        var view = new TennisMatchView(match); 
+        return [view, new TennisMatchDelegate(match)]; 
     }
 
 }

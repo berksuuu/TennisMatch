@@ -3,10 +3,11 @@ import Toybox.WatchUi;
 import Toybox.Lang; 
 class TennisMatchView extends WatchUi.View {
 
-    var count as Number = 7; 
+    var match as MatchState; 
 
-    function initialize() {
+    function initialize(m as MatchState) {
         View.initialize();
+        match = m; 
     }
 
     // Load your resources here
@@ -29,7 +30,15 @@ class TennisMatchView extends WatchUi.View {
         var midX = dc.getWidth() / 2; 
         var midY = dc.getHeight() / 2; 
         
-        dc.drawText(midX, midY, Graphics.FONT_NUMBER_THAI_HOT, count.toString(), Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+                // Games klein, oberhalb der Mitte
+        var gamesText = match.games[ME].toString() + " - " + match.games[OPPONENT].toString();
+        dc.drawText(midX, midY - 90, Graphics.FONT_SMALL, gamesText, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+
+        // Punkte groß in der Mitte
+        var pointsText = match.points[ME].toString() + " - " + match.points[OPPONENT].toString();   
+        dc.drawText(midX, midY, Graphics.FONT_LARGE, pointsText, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+
+
 
     }
 

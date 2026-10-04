@@ -3,11 +3,12 @@ import Toybox.WatchUi;
 
 class TennisMatchDelegate extends WatchUi.BehaviorDelegate {
 
-    var view as TennisMatchView;
+    var match as MatchState; 
 
-    function initialize(v as TennisMatchView) {
+    function initialize(m as MatchState) {
+
         BehaviorDelegate.initialize();
-        view = v;
+        match = m; 
     }
 
     function onMenu() as Boolean {
@@ -16,13 +17,13 @@ class TennisMatchDelegate extends WatchUi.BehaviorDelegate {
     }
 
     function onPreviousPage() as Boolean {
-        view.count++; 
+        match.pointWon(ME);
         WatchUi.requestUpdate();
         return true;
     }
 
      function onNextPage() as Boolean {
-        view.count--; 
+        match.pointWon(OPPONENT);  
         WatchUi.requestUpdate();
         return true;
     }
