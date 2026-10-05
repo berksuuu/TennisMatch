@@ -1,4 +1,5 @@
 import Toybox.Lang;
+import Toybox.Application; 
 
 // Regeln für ein Match – werden vor dem Match festgelegt und ändern sich danach nicht
 class MatchRules {
@@ -15,4 +16,31 @@ class MatchRules {
         matchTiebreak = false;
         firstServer = ME;
     }
+
+        // Gemerkte Regeln laden (fehlt ein Wert, bleibt der Standard)
+    function load() as Void {
+        var sets = Application.Storage.getValue("setsToWin");
+        if (sets != null) {
+            setsToWin = sets as Number;
+        }
+
+        var ad = Application.Storage.getValue("noAd");
+        if (ad != null) {
+            noAd = ad as Boolean;
+        }
+
+        var tiebreak = Application.Storage.getValue("matchTiebreak");
+        if (tiebreak != null) {
+            matchTiebreak = tiebreak as Boolean;
+        }
+        
+    }
+
+    // Aktuelle Regeln merken
+    function save() as Void {
+        Application.Storage.setValue("setsToWin", setsToWin);
+        Application.Storage.setValue("noAd", noAd);
+        Application.Storage.setValue("matchTiebreak", matchTiebreak);
+    }
+
 }

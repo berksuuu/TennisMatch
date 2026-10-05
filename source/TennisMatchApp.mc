@@ -21,6 +21,7 @@ class TennisMatchApp extends Application.AppBase {
     // Return the initial view of your application here
     function getInitialView() as [Views] or [Views, InputDelegates] {
         var rules = new MatchRules(); 
+        rules.load();
         return [createSetupMenu(rules), new SetupMenuDelegate(rules)];
 
     }

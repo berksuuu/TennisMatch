@@ -39,6 +39,7 @@ class SetupMenuDelegate extends WatchUi.Menu2InputDelegate {
 
         if (id == :start) {
             // Match mit den gewählten Regeln erzeugen, Aufzeichnung starten
+            rules.save();
             var match = new MatchState(rules);
             var recorder = new MatchRecorder();
             recorder.start();
