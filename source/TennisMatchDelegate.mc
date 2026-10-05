@@ -22,7 +22,7 @@ class TennisMatchDelegate extends WatchUi.BehaviorDelegate {
     }
 
     function onNextPage() as Boolean {
-        match.pointWon(OPPONENT);
+        scorePoint(OPPONENT);
         WatchUi.requestUpdate();
         return true;
     }
