@@ -11,18 +11,13 @@ class TennisMatchDelegate extends WatchUi.BehaviorDelegate {
         recorder = r; 
     }
 
-    function onMenu() as Boolean {
-        WatchUi.pushView(
-            new Rez.Menus.MainMenu(),
-            new TennisMatchMenuDelegate(),
-            WatchUi.SLIDE_UP
-        );
-        return true;
+    function onSelect() as Boolean {
+        openPauseMenu(); 
+        return true; 
     }
 
     function onPreviousPage() as Boolean {
-        match.pointWon(ME);
-        WatchUi.requestUpdate();
+        scorePoint(ME);
         return true;
     }
 
@@ -34,11 +29,40 @@ class TennisMatchDelegate extends WatchUi.BehaviorDelegate {
 
     function onBack() as Boolean {
         if (!match.canUndo()) {
-            return false;
+            openPauseMenu();
+            return true;
         }
 
         match.undo();
         WatchUi.requestUpdate();
         return true;
     }
+
+     // Aufzeichnung pausieren und Pausenmenü anzeigen
+    private function openPauseMenu() as Void {
+        recorder.pause();                               // pausieren
+
+        var menu = new WatchUi.Menu2({:title => "Pause"});
+        menu.addItem(new WatchUi.MenuItem("Fortsetzen", null, :resume, null));
+        menu.addItem(new WatchUi.MenuItem("Speichern", null, :save, null));
+        menu.addItem(new WatchUi.MenuItem("Verwerfen", null, :discard, null));
+
+        WatchUi.pushView(menu, new PauseMenuDelegate(recorder), WatchUi.SLIDE_UP);
+    }
+
+        // Punkt vergeben; wenn dadurch ein Satz endet, neue Runde in der Aufzeichnung
+    private function scorePoint(player as Number) as Void {
+        var setsBefore = match.sets[ME] + match.sets[OPPONENT];   // ① Sätze vorher
+
+        match.pointWon(player);                                   // ② Punkt vergeben
+
+        var setsAfter = match.sets[ME] + match.sets[OPPONENT];    // ③ Sätze nachher
+        if (setsAfter > setsBefore) {                             // ④ Satz gerade beendet?
+            recorder.addLap();                                    //    → neue Runde
+        }
+
+        WatchUi.requestUpdate();                                  // ⑤ neu zeichnen
+    }
+
+
 }

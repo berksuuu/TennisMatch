@@ -1,13 +1,19 @@
 import Toybox.Graphics;
 import Toybox.WatchUi;
 import Toybox.Lang; 
+import Toybox.Activity;
+import Toybox.Timer; 
+
 class TennisMatchView extends WatchUi.View {
 
     var match as MatchState; 
+    var timer as Timer.Timer?; 
 
     function initialize(m as MatchState) {
         View.initialize();
         match = m; 
+        timer = null; 
+
     }
 
     // Load your resources here
@@ -19,6 +25,12 @@ class TennisMatchView extends WatchUi.View {
     // the state of this View and prepare it to be shown. This includes
     // loading resources into memory.
     function onShow() as Void {
+        timer = new Timer.Timer(); 
+        timer.start(method(:onTick), 1000, true); 
+    }
+
+    function onTick() as Void {
+        WatchUi.requestUpdate(); 
     }
 
     // Update the view
@@ -60,6 +72,29 @@ class TennisMatchView extends WatchUi.View {
             dc.setColor(Graphics.COLOR_YELLOW, Graphics.COLOR_TRANSPARENT);
             dc.fillCircle(dotX, midY, 8);
         }
+
+        var timeText = "0:00";         
+        var hrText = "--";
+
+        var info = Activity.getActivityInfo();
+        if (info != null) {
+            var ms = info.timerTime;
+            if (ms != null) {                                             
+                var seconds = ms / 1000 ;                                 
+                timeText = (seconds / 60).toString() 
+                + ":" 
+                + (seconds & 60).format("%02d");   
+            }
+
+            var hr = info.currentHeartRate;
+            if (hr != null) {
+                hrText = hr.toString();                                      
+            }
+        }
+
+        dc.drawText(midX, midY - 140, Graphics.FONT_TINY, timeText, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+        dc.drawText(midX, midY + 140, Graphics.FONT_TINY, hrText + " bpm", Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+
     }
 
     private function pointsText() as String {
@@ -93,6 +128,10 @@ class TennisMatchView extends WatchUi.View {
     // state of this View here. This includes freeing resources from
     // memory.
     function onHide() as Void {
+        if(timer != null) {
+            timer.stop(); 
+            timer = null; 
+        }
     }
 
 }
