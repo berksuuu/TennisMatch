@@ -11,7 +11,7 @@ function winPoints(m as MatchState, player as Number, n as Number) as Void {
 // 4 Punkte am Stück = 1 Game, Punkte werden zurückgesetzt
 (:test)
 function testGameAfterFourPoints(logger as Logger) as Boolean {
-    var m = new MatchState();
+    var m = new MatchState(new MatchRules());
     winPoints(m, ME, 4);
     Test.assertEqualMessage(m.games[ME], 1, "Games ich");
     Test.assertEqualMessage(m.points[ME], 0, "Punkte ich zurückgesetzt");
@@ -21,7 +21,7 @@ function testGameAfterFourPoints(logger as Logger) as Boolean {
 // 3:3, dann Vorteil → noch kein Game; dann 2 Punkte → Game
 (:test)
 function testDeuceNeedsTwoPoints(logger as Logger) as Boolean {
-    var m = new MatchState(); 
+    var m = new MatchState(new MatchRules()); 
     winPoints(m, ME, 3); 
     winPoints(m, OPPONENT, 3); 
     winPoints(m, ME, 1); 
@@ -33,7 +33,7 @@ function testDeuceNeedsTwoPoints(logger as Logger) as Boolean {
 
 (:test)
 function testSetWonSixFour(logger as Logger) as Boolean {
-    var m = new MatchState(); 
+    var m = new MatchState(new MatchRules()); 
     winPoints(m, ME, 4*4);
     winPoints(m, OPPONENT, 4*4);
     winPoints(m, ME, 4*1);
@@ -45,7 +45,7 @@ function testSetWonSixFour(logger as Logger) as Boolean {
 
 (:test)
 function testNoSetAtSixFive(logger as Logger) as Boolean {
-    var m = new MatchState(); 
+    var m = new MatchState(new MatchRules()); 
     winPoints(m, ME, 4*5); 
     winPoints(m, OPPONENT, 4*5); 
     winPoints(m, ME, 4*1);
@@ -56,7 +56,7 @@ function testNoSetAtSixFive(logger as Logger) as Boolean {
 
 (:test)
 function testTiebreakStartsAtSixSix(logger as Logger) as Boolean {
-    var m = new MatchState(); 
+    var m = new MatchState(new MatchRules()); 
     winPoints(m, ME, 4*5); 
     winPoints(m, OPPONENT, 4*5);
     winPoints(m, ME, 4*1); 
@@ -74,7 +74,7 @@ function playToTiebreak(m as MatchState) as Void {
 
 (:test)
 function testTiebreakNeedsTwo(logger as Logger) as Boolean {
-    var m = new MatchState();
+    var m = new MatchState(new MatchRules());
     playToTiebreak(m);
     winPoints(m, ME, 6);
     winPoints(m, OPPONENT, 6);
@@ -88,7 +88,7 @@ function testTiebreakNeedsTwo(logger as Logger) as Boolean {
 // Tie-Break 8:6 → Satz gewonnen
 (:test)
 function testTiebreakWinsSet(logger as Logger) as Boolean {
-    var m = new MatchState();
+    var m = new MatchState(new MatchRules());
     playToTiebreak(m);
     winPoints(m, ME, 6);
     winPoints(m, OPPONENT, 6);
@@ -101,7 +101,7 @@ function testTiebreakWinsSet(logger as Logger) as Boolean {
 
 (:test)
 function testMatchFinished(logger as Logger) as Boolean {
-    var m = new MatchState(); 
+    var m = new MatchState(new MatchRules()); 
     winPoints(m, ME, 4*6);
     winPoints(m, ME, 4*6);
     winPoints(m, OPPONENT, 4*4);
@@ -112,7 +112,7 @@ function testMatchFinished(logger as Logger) as Boolean {
 
 (:test)
 function testServerAlternates(logger as Logger) as Boolean {
-    var m = new MatchState();
+    var m = new MatchState(new MatchRules());
     Test.assertEqualMessage(m.currentServer(), ME, "Spieler 1 schlägt auf"); 
     winPoints(m, ME, 4*1); 
     Test.assertEqualMessage(m.currentServer(), OPPONENT, "Spieler 2 schlägt auf"); 
@@ -124,7 +124,7 @@ function testServerAlternates(logger as Logger) as Boolean {
 // Undo nimmt genau einen Punkt zurück
 (:test)
 function testUndoPoint(logger as Logger) as Boolean {
-    var m = new MatchState();
+    var m = new MatchState(new MatchRules());
     winPoints(m, ME, 2);
     m.undo();
     Test.assertEqualMessage(m.points[ME], 1, "Punkte ich nach Undo");
@@ -134,7 +134,7 @@ function testUndoPoint(logger as Logger) as Boolean {
 // Undo nach einem Game holt 40:0, das Game und den Aufschlag zurück
 (:test)
 function testUndoGame(logger as Logger) as Boolean {
-    var m = new MatchState();
+    var m = new MatchState(new MatchRules());
     winPoints(m, ME, 4);
     m.undo();
     Test.assertEqualMessage(m.games[ME], 0, "Game zurückgenommen");
@@ -146,7 +146,7 @@ function testUndoGame(logger as Logger) as Boolean {
 // Undo nach einem Tie-Break-Gewinn holt den Tie-Break zurück
 (:test)
 function testUndoTiebreakWin(logger as Logger) as Boolean {
-    var m = new MatchState();
+    var m = new MatchState(new MatchRules());
     playToTiebreak(m);
     winPoints(m, ME, 7);
     Test.assertEqualMessage(m.sets[ME], 1, "Satz gewonnen");
@@ -160,7 +160,7 @@ function testUndoTiebreakWin(logger as Logger) as Boolean {
 // Undo im Tie-Break darf die Aufschlag-Reihenfolge nicht verdrehen
 (:test)
 function testUndoInTiebreakKeepsServer(logger as Logger) as Boolean {
-    var m = new MatchState();
+    var m = new MatchState(new MatchRules());
     playToTiebreak(m);                  // bei 6:6 schlage ich den ersten Tie-Break-Punkt auf
     winPoints(m, ME, 2);
     m.undo();                           // Stand 1:0 im Tie-Break
@@ -171,7 +171,7 @@ function testUndoInTiebreakKeepsServer(logger as Logger) as Boolean {
 // Undo nach Matchende macht das Match wieder spielbar
 (:test)
 function testUndoAfterMatchEnd(logger as Logger) as Boolean {
-    var m = new MatchState();
+    var m = new MatchState(new MatchRules());
     winPoints(m, ME, 4*6*2);
     Test.assertEqualMessage(m.finished, true, "Match vorbei");
     m.undo();
@@ -183,7 +183,7 @@ function testUndoAfterMatchEnd(logger as Logger) as Boolean {
 // Undo ohne gespielte Punkte: nichts passiert, kein Absturz
 (:test)
 function testUndoEmpty(logger as Logger) as Boolean {
-    var m = new MatchState();
+    var m = new MatchState(new MatchRules());
     Test.assertEqualMessage(m.canUndo(), false, "nichts zum Rückgängigmachen");
     m.undo();
     Test.assertEqualMessage(m.points[ME], 0, "Punkte unverändert");
@@ -193,11 +193,78 @@ function testUndoEmpty(logger as Logger) as Boolean {
 // Schnappschüsse sind echte Kopien (Falle: Arrays sind nur Verweise)
 (:test)
 function testSnapshotIsIndependent(logger as Logger) as Boolean {
-    var m = new MatchState();
+    var m = new MatchState(new MatchRules());
     winPoints(m, ME, 2);
     m.undo();
     m.undo();
     Test.assertEqualMessage(m.points[ME], 0, "zurück auf 0:0");
     Test.assertEqualMessage(m.canUndo(), false, "Stapel leer");
+    return true;
+}
+
+
+// ---------- Regeln (MatchRules) ----------
+
+// No-Ad: bei 40:40 entscheidet ein einziger Punkt
+(:test)
+function testNoAdDecidingPoint(logger as Logger) as Boolean {
+    var rules = new MatchRules();
+    rules.noAd = true;
+    var m = new MatchState(rules);
+    winPoints(m, ME, 3);
+    winPoints(m, OPPONENT, 3);                 // 40:40
+    winPoints(m, ME, 1);                       // entscheidender Punkt
+    Test.assertEqualMessage(m.games[ME], 1, "Game nach einem Punkt bei 40:40");
+    return true;
+}
+
+// No-Ad gilt nicht im Tie-Break: 7:6 reicht dort weiterhin nicht
+(:test)
+function testNoAdTiebreakStillNeedsTwo(logger as Logger) as Boolean {
+    var rules = new MatchRules();
+    rules.noAd = true;
+    var m = new MatchState(rules);
+    playToTiebreak(m);
+    winPoints(m, ME, 6);
+    winPoints(m, OPPONENT, 6);
+    winPoints(m, ME, 1);                       // 7:6 im Tie-Break
+    Test.assertEqualMessage(m.tiebreak, true, "Tie-Break läuft weiter");
+    Test.assertEqualMessage(m.sets[ME], 0, "noch kein Satz");
+    return true;
+}
+
+// Best of 1: ein Satz entscheidet das Match
+(:test)
+function testBestOfOne(logger as Logger) as Boolean {
+    var rules = new MatchRules();
+    rules.setsToWin = 1;
+    var m = new MatchState(rules);
+    winPoints(m, ME, 4*6);
+    Test.assertEqualMessage(m.finished, true, "Match nach 1 Satz vorbei");
+    return true;
+}
+
+// Best of 5: erst 3 Sätze entscheiden das Match
+(:test)
+function testBestOfFive(logger as Logger) as Boolean {
+    var rules = new MatchRules();
+    rules.setsToWin = 3;
+    var m = new MatchState(rules);
+    winPoints(m, ME, 4*6*2);
+    Test.assertEqualMessage(m.finished, false, "nach 2 Sätzen noch nicht vorbei");
+    winPoints(m, ME, 4*6);
+    Test.assertEqualMessage(m.finished, true, "nach 3 Sätzen vorbei");
+    return true;
+}
+
+// Gegner schlägt zuerst auf
+(:test)
+function testOpponentServesFirst(logger as Logger) as Boolean {
+    var rules = new MatchRules();
+    rules.firstServer = OPPONENT;
+    var m = new MatchState(rules);
+    Test.assertEqualMessage(m.currentServer(), OPPONENT, "Gegner schlägt zuerst auf");
+    winPoints(m, ME, 4);
+    Test.assertEqualMessage(m.currentServer(), ME, "nach einem Game ich");
     return true;
 }

@@ -2,7 +2,6 @@ import Toybox.Lang;
 
 const ME = 0; 
 const OPPONENT = 1; 
-const SETS_TO_WIN = 2; 
 
 class MatchState {
 
@@ -13,14 +12,16 @@ class MatchState {
     var tiebreak as Boolean; 
     var server as Number; 
     var history as Array<MatchState>; 
+    var rules as MatchRules;
 
-    function initialize() {
+    function initialize(r as MatchRules) {
+        rules = r;  
         points = [0, 0];
         games = [0, 0]; 
         sets = [0, 0]; 
         finished = false; 
         tiebreak = false; 
-        server = ME; 
+        server = rules.firstServer; 
         history = []; 
     }
 
@@ -34,11 +35,14 @@ class MatchState {
         points[player] += 1; 
 
         var needed = 4; 
+        var lead = 2;
         if (tiebreak) {
             needed = 7; 
+        } else if (rules.noAd == true) {
+            lead = 1;
         }
 
-        if(points[player] >= needed && (points[player] - points[other]) >= 2){
+        if(points[player] >= needed && (points[player] - points[other]) >= lead){
             gameWon(player); 
         }
     }
@@ -81,13 +85,13 @@ class MatchState {
         sets[player] += 1; 
         games = [0, 0]; 
 
-        if(sets[player] >= SETS_TO_WIN){
+        if(sets[player] >= rules.setsToWin){
             finished = true;
         }
     }
     
     private function copy() as MatchState {
-        var c = new MatchState(); 
+        var c = new MatchState(rules); 
         c.points = [points[ME], points[OPPONENT]]; 
         c.games = [games[ME], games[OPPONENT]]; 
         c.sets = [sets[ME], sets[OPPONENT]]; 
