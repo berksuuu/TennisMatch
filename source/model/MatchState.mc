@@ -38,6 +38,9 @@ class MatchState {
         var lead = 2;
         if (tiebreak) {
             needed = 7; 
+            if(matchTieBreakActive() == true) {
+                needed = 10;
+            }
         } else if (rules.noAd == true) {
             lead = 1;
         }
@@ -87,9 +90,16 @@ class MatchState {
 
         if(sets[player] >= rules.setsToWin){
             finished = true;
+        } else if (matchTieBreakActive() == true) {
+            tiebreak = true; 
         }
     }
     
+    function matchTieBreakActive() as Boolean {
+        var decider = rules.setsToWin - 1; 
+        return rules.matchTiebreak && rules.setsToWin > 1 && sets[ME] == decider && sets[OPPONENT] == decider;
+    }
+
     private function copy() as MatchState {
         var c = new MatchState(rules); 
         c.points = [points[ME], points[OPPONENT]]; 

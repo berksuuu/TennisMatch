@@ -268,3 +268,67 @@ function testOpponentServesFirst(logger as Logger) as Boolean {
     Test.assertEqualMessage(m.currentServer(), ME, "nach einem Game ich");
     return true;
 }
+
+
+
+// ---------- Match-Tie-Break ----------
+
+// Hilfsfunktion: Match mit Match-Tie-Break (Best of 3)
+function newMatchTiebreakMatch() as MatchState {
+    var rules = new MatchRules();
+    rules.matchTiebreak = true;
+    return new MatchState(rules);
+}
+
+// Bei 1:1 Sätzen beginnt sofort der Match-Tie-Break, gespielt bis 10
+(:test)
+function testMatchTiebreakToTen(logger as Logger) as Boolean {
+    var m = newMatchTiebreakMatch();
+    winPoints(m, ME, 4*6);
+    winPoints(m, OPPONENT, 4*6);                       // 1:1 Sätze
+    Test.assertEqualMessage(m.tiebreak, true, "Match-Tie-Break beginnt sofort");
+    winPoints(m, ME, 7);
+    Test.assertEqualMessage(m.finished, false, "7 Punkte reichen nicht");
+    winPoints(m, ME, 3);
+    Test.assertEqualMessage(m.finished, true, "bei 10 Punkten gewonnen");
+    return true;
+}
+
+// Auch im Match-Tie-Break: 2 Punkte Vorsprung
+(:test)
+function testMatchTiebreakNeedsTwo(logger as Logger) as Boolean {
+    var m = newMatchTiebreakMatch();
+    winPoints(m, ME, 4*6);
+    winPoints(m, OPPONENT, 4*6);
+    winPoints(m, ME, 9);
+    winPoints(m, OPPONENT, 9);
+    winPoints(m, ME, 1);                               // 10:9
+    Test.assertEqualMessage(m.finished, false, "10:9 reicht nicht");
+    winPoints(m, ME, 1);                               // 11:9
+    Test.assertEqualMessage(m.finished, true, "11:9 gewonnen");
+    return true;
+}
+
+// Im ersten Satz bleibt der normale Tie-Break bis 7
+(:test)
+function testNormalTiebreakInFirstSet(logger as Logger) as Boolean {
+    var m = newMatchTiebreakMatch();
+    playToTiebreak(m);
+    winPoints(m, ME, 7);
+    Test.assertEqualMessage(m.sets[ME], 1, "Tie-Break bis 7 im ersten Satz");
+    return true;
+}
+
+// Best of 1 mit Match-Tie-Break: normales Match, kein Tie-Break bei 0:0
+(:test)
+function testMatchTiebreakIgnoredInBestOfOne(logger as Logger) as Boolean {
+    var rules = new MatchRules();
+    rules.matchTiebreak = true;
+    rules.setsToWin = 1;
+    var m = new MatchState(rules);
+    Test.assertEqualMessage(m.tiebreak, false, "normaler Start");
+    playToTiebreak(m);
+    winPoints(m, ME, 7);
+    Test.assertEqualMessage(m.finished, true, "normaler Tie-Break bis 7 entscheidet");
+    return true;
+}
