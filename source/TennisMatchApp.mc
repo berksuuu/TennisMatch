@@ -11,6 +11,7 @@ class TennisMatchApp extends Application.AppBase {
 
     // onStart() is called on application start up
     function onStart(state as Dictionary?) as Void {
+       
     }
 
     // onStop() is called when your application is exiting
@@ -19,12 +20,17 @@ class TennisMatchApp extends Application.AppBase {
 
     // Return the initial view of your application here
     function getInitialView() as [Views] or [Views, InputDelegates] {
-        var match = new MatchState();  
-        var view = new TennisMatchView(match); 
-        return [view, new TennisMatchDelegate(match)]; 
+        var match = new MatchState();
+        var recorder = new MatchRecorder();
+        recorder.start();
+
+        var view = new TennisMatchView(match);
+        return [view, new TennisMatchDelegate(match, recorder)];
     }
 
-}
+ }
+
+
 
 
 

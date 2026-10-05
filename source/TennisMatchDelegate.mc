@@ -3,10 +3,12 @@ import Toybox.WatchUi;
 
 class TennisMatchDelegate extends WatchUi.BehaviorDelegate {
     var match as MatchState;
+    var recorder as MatchRecorder; 
 
-    function initialize(m as MatchState) {
+    function initialize(m as MatchState, r as MatchRecorder) {
         BehaviorDelegate.initialize();
         match = m;
+        recorder = r; 
     }
 
     function onMenu() as Boolean {
