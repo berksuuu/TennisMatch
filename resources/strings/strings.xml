@@ -1,5 +1,35 @@
 <strings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://developer.garmin.com/downloads/connect-iq/resources.xsd">
     <string id="AppName">TennisMatch</string>
-
-   
+    <string id="NewMatch">New match</string>
+    <string id="StartMatch">Start match</string>
+    <string id="Sets">Sets</string>
+    <string id="BestOf">Best of</string>
+    <string id="NoAd">No-Ad</string>
+    <string id="MatchTiebreak">Match tiebreak</string>
+    <string id="FirstServe">First serve</string>
+    <string id="Me">Me</string>
+    <string id="Opponent">Opponent</string>
+    <string id="Theme">Theme</string>
+    <string id="ThemeClassic">Classic</string>
+    <string id="ThemeMelbourne">Hard court Melbourne</string>
+    <string id="ThemeParis">Clay Paris</string>
+    <string id="ThemeLondon">Grass London</string>
+    <string id="ThemeNewYork">Hard court New York</string>
+    <string id="Pause">Pause</string>
+    <string id="Resume">Resume</string>
+    <string id="Save">Save</string>
+    <string id="Discard">Discard</string>
+    <string id="EndMatch">End match</string>
+    <string id="Changeover">Change ends</string>
+    <string id="Tiebreak">Tiebreak</string>
+    <string id="BreakPoint">Break point</string>
+    <string id="SetPoint">Set point</string>
+    <string id="MatchPoint">Match point</string>
+    <string id="Won">Victory!</string>
+    <string id="Lost">Defeat</string>
+    <string id="Duration">Duration</string>
+    <string id="AvgHeartRate">Avg HR</string>
+    <string id="Calories">Calories</string>
+    <string id="PointsWon">Points</string>
+    <string id="SummaryHint">START finish  BACK undo</string>
 </strings>
