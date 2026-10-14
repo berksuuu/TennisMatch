@@ -4,8 +4,6 @@ Eine Garmin-Connect-IQ-App für die Uhr, die beim Tennis den Spielstand zählt u
 
 Entwickelt und getestet auf der **Forerunner 170 Music**. Das Manifest listet weitere aktuelle Garmin-Uhren.
 
-> **Status:** in Entwicklung. Die App läuft im Simulator, der Test auf einer echten Uhr steht noch aus.
-
 ## Screenshots
 
 | Setup | Im Match | Vorteil |
