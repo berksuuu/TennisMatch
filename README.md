@@ -113,13 +113,3 @@ monkeydo bin/test.prg fr170m /t
 
 Bei Abstürzen auf der Uhr steht die Fehlermeldung in `GARMIN/APPS/LOGS/`.
 
-## Roadmap
-
-- [x] Test auf der echten Uhr
-- [x] Geteiltes Layout mit Farb-Themes und Tennisball als Aufschlag-Anzeige
-- [x] Punkte durch Antippen der linken/rechten Bildschirmhälfte, Vibration bei Punkt, Game und Satz
-- [x] Hinweis auf den Seitenwechsel, Satzverlauf, Anzeige von Breakball/Satzball/Matchball
-- [x] Zusammenfassung nach dem Match
-- [x] Theme-Auswahl im Setup, eigenes App-Icon, Deutsch und Englisch
-
-Mögliche nächste Ideen: Doppel mit Aufschlagreihenfolge über vier Spieler, Statistiken wie Asse und Doppelfehler, Endergebnis als eigenes Feld in Garmin Connect.
