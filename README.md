@@ -97,11 +97,3 @@ monkeydo bin/test.prg fr170m /t
 
 Bei Abstürzen auf der Uhr steht die Fehlermeldung in `GARMIN/APPS/LOGS/`.
 
-## Roadmap
-
-- [ ] Test auf der echten Uhr
-- [ ] Geteiltes Layout mit Farb-Themes (z. B. Hartplatz, Sand, Rasen) und Tennisball als Aufschlag-Anzeige
-- [ ] Punkte durch Antippen der linken/rechten Bildschirmhälfte, Vibration bei Punkt, Game und Satz
-- [ ] Hinweis auf den Seitenwechsel, Satzverlauf, Anzeige von Breakball/Satzball/Matchball
-- [ ] Zusammenfassung nach dem Match
-- [ ] Theme-Auswahl im Setup, eigenes App-Icon, Deutsch und Englisch
